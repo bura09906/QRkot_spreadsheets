@@ -1,9 +1,8 @@
 from aiogoogle import Aiogoogle
 
 from app.core.config import settings
-from app.services.utils_for_google_api import (
-    get_spreadsheet_body, get_table_values
-)
+from app.services.utils_for_google_api import (get_spreadsheet_body,
+                                               get_table_values)
 
 
 async def spreadsheets_create(
