@@ -29,7 +29,10 @@ async def get_report(
             session=session
         )
     )
-    spreadsheetid = await spreadsheets_create(wrapper_services)
+    spreadsheetid = await spreadsheets_create(
+        wrapper_services,
+        row_count=len(closed_projects_by_closing_time)
+    )
     await set_user_permissions(spreadsheetid, wrapper_services)
     await spreadsheets_update_value(
         spreadsheetid,

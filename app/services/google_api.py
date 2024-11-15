@@ -1,24 +1,17 @@
-from datetime import datetime
-
 from aiogoogle import Aiogoogle
 
 from app.core.config import settings
+from app.services.utils_for_google_api import (
+    get_spreadsheet_body, get_table_values
+)
 
-FORMAT = "%Y/%m/%d %H:%M:%S"
 
-
-async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
-    now_date_time = datetime.now().strftime(FORMAT)
+async def spreadsheets_create(
+    wrapper_services: Aiogoogle,
+    row_count: int
+) -> str:
     service = await wrapper_services.discover('sheets', 'v4')
-    spreadsheet_body = {
-        'properties': {'title': f'Отчёт на {now_date_time}',
-                       'locale': 'ru_RU'},
-        'sheets': [{'properties': {'sheetType': 'GRID',
-                                   'sheetId': 0,
-                                   'title': 'Лист1',
-                                   'gridProperties': {'rowCount': 100,
-                                                      'columnCount': 11}}}]
-    }
+    spreadsheet_body = get_spreadsheet_body(row_count=row_count)
     response = await wrapper_services.as_service_account(
         service.spreadsheets.create(json=spreadsheet_body)
     )
@@ -47,14 +40,9 @@ async def spreadsheets_update_value(
         projects: list,
         wrapper_services: Aiogoogle
 ) -> None:
-    now_date_time = datetime.now().strftime(FORMAT)
     service = await wrapper_services.discover('sheets', 'v4')
 
-    table_values = [
-        ['Отчёт от', now_date_time],
-        ['Топ проектов по скорости закрытия'],
-        ['Название проекта', 'Время сбора', 'Описание']
-    ]
+    table_values = get_table_values()
 
     for project in projects:
         new_row = [
@@ -72,7 +60,7 @@ async def spreadsheets_update_value(
     await wrapper_services.as_service_account(
         service.spreadsheets.values.update(
             spreadsheetId=spreadsheetid,
-            range='A1:E30',
+            range=f'R1C1:R{len(table_values)}C3',
             valueInputOption='USER_ENTERED',
             json=update_body
         )
