@@ -5,7 +5,7 @@ from app.constants import (COLUMN_COUNT, ROW_COUNT, SPREADSHEET_PATTERN,
                            TABLE_VALUES_PATTERN, TIME_FORMAT_GOOGLE_SHEET)
 
 
-def set_value_gridProperties(spreadsheet_body, key, value):
+def set_value_grid_properties(spreadsheet_body, key, value):
     spreadsheet_body['sheets'][0]['properties']['gridProperties'][key] = value
 
 
@@ -22,8 +22,8 @@ def get_spreadsheet_body(
     spreadsheet_body = copy.deepcopy(SPREADSHEET_PATTERN)
 
     spreadsheet_body['properties']['title'] = f'Отчет на {current_time}'
-    set_value_gridProperties(spreadsheet_body, 'rowCount', row_count)
-    set_value_gridProperties(spreadsheet_body, 'columnCount', column_count)
+    set_value_grid_properties(spreadsheet_body, 'rowCount', row_count)
+    set_value_grid_properties(spreadsheet_body, 'columnCount', column_count)
 
     return spreadsheet_body
 
